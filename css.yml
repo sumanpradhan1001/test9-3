@@ -1,0 +1,32 @@
+trigger:
+  - main  # or your branch name
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  buildConfiguration: 'Release'
+  artifactName: 'webapp'
+
+steps:
+  - task: UseNode@1
+    inputs:
+      version: '18.x' # if you use npm tools (optional)
+
+  - task: PowerShell@2
+    inputs:
+      targetType: 'inline'
+      script: |
+        Write-Host "Preparing Web App..."
+
+  - task: CopyFiles@2
+    inputs:
+      SourceFolder: '$(Build.SourcesDirectory)'
+      Contents: '**/*'
+      TargetFolder: '$(Build.ArtifactStagingDirectory)'
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+      ArtifactName: '$(artifactName)'
+      publishLocation: 'Cont
